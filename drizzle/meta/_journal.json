@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1741002979422,
+      "tag": "0000_ambitious_bullseye",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1741003575792,
+      "tag": "0001_colorful_slyde",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1741020465361,
+      "tag": "0002_blue_pet_avengers",
+      "breakpoints": true
+    }
+  ]
+}
