@@ -27,7 +27,9 @@ export function AnkideckActions({
       <DropdownMenuContent>
         <DropdownMenuLabel>Deck actions</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DeleteAnkideckModal deckId={deckId} deckUserId={deckUserId} />
+        <DropdownMenuItem>
+          <DeleteAnkideckModal deckId={deckId} deckUserId={deckUserId} />
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

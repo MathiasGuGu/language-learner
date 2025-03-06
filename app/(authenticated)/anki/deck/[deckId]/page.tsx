@@ -1,5 +1,6 @@
 import { GetAllAnkiCardsInDeckUsecase } from "@/use-cases/anki-usecases";
 import AddAnkicardsView from "./add-ankicards-view";
+import { LearnAnkicardsView } from "./learn-ankicards-view";
 
 export default async function AnkiDeckPage({
   params,
@@ -13,5 +14,5 @@ export default async function AnkiDeckPage({
     return <AddAnkicardsView deckId={deckId} />;
   }
 
-  return <div>Anki deck</div>;
+  return <LearnAnkicardsView deckId={deckId} />;
 }
