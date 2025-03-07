@@ -18,12 +18,23 @@ import { Check, Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { toast } from "sonner";
 
 const createAnkideckSchema = z.object({
   name: z.string().min(3),
 });
 
-export function CreateAnkideckForm() {
+// Type for the creation response
+type CreateDeckResponse = {
+  success: boolean;
+  createdDeck: any; // Using any here since we don't need the exact type
+};
+
+type CreateAnkideckFormProps = {
+  onSuccess?: () => void; // Callback to close the dialog
+};
+
+export function CreateAnkideckForm({ onSuccess }: CreateAnkideckFormProps) {
   const router = useRouter();
   const session = authClient.useSession();
   const userId = session.data?.user.id;
@@ -33,12 +44,47 @@ export function CreateAnkideckForm() {
     isPending,
     isSuccess,
   } = useMutation({
-    mutationFn: async (deckInfo: NewAnkiDeckType) =>
-      await CreateAnkiDeckUsecase(deckInfo),
-    mutationKey: ["create-anki-deck", userId],
-    onSuccess: () => {
-      router.refresh();
+    mutationFn: async (deckInfo: NewAnkiDeckType): Promise<CreateDeckResponse> => {
+      // Expected to return the properly serialized response
+      return await CreateAnkiDeckUsecase(deckInfo) as CreateDeckResponse;
     },
+    mutationKey: ["create-anki-deck", userId],
+    onSuccess: (data) => {
+      if (!data.success || !data.createdDeck) {
+        toast.error("Failed to create deck");
+        return;
+      }
+
+      // Show success toast
+      toast.success(`Deck "${data.createdDeck.name}" created successfully`);
+
+      // Emit a custom event to update the deck list in real-time
+      try {
+        const event = new CustomEvent("deck-created", {
+          detail: { newDeck: data.createdDeck }
+        });
+        window.dispatchEvent(event);
+      } catch (error) {
+        console.error("Failed to dispatch deck-created event:", error);
+      }
+
+      // Call onSuccess callback to close the modal
+      if (onSuccess) {
+        onSuccess();
+      }
+
+      // Reset the form
+      form.reset();
+
+      // Refresh the page to update the server data - do this last
+      setTimeout(() => {
+        router.refresh();
+      }, 100);
+    },
+    onError: (error) => {
+      toast.error("Failed to create deck: " + (error instanceof Error ? error.message : "Unknown error"));
+      console.error("Create deck error:", error);
+    }
   });
 
   const form = useForm<z.infer<typeof createAnkideckSchema>>({
@@ -59,7 +105,8 @@ export function CreateAnkideckForm() {
       };
       createAnkiDeck(deckInfo);
     } catch (e) {
-      console.log(e);
+      console.error(e);
+      toast.error("Failed to create deck. Please try again.");
     }
   }
 
@@ -82,7 +129,7 @@ export function CreateAnkideckForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 transition-colors duration-100">
           {isPending ? (
             <Loader size={16} strokeWidth={1.5} className="animate-spin" />
           ) : isSuccess ? (

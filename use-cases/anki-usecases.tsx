@@ -70,12 +70,30 @@ export const GetAllAnkiDeckByUserIdUsecase = withAuth(
 
 export const CreateAnkiDeckUsecase = withAuth(
   async (deckInfo: NewAnkiDeckType) => {
-    return createAnkiDeck(deckInfo);
+    const result = await createAnkiDeck(deckInfo);
+
+    if (!result.success) {
+      throw new Error(typeof result.error === 'string' ? result.error : 'Failed to create deck');
+    }
+
+    return {
+      success: true,
+      createdDeck: result.createdDeck
+    };
   }
 );
 
 export const DeleteAnkideckUsecase = withAuth(
   async ({ deckId, userId }: { deckId: string; userId: string }) => {
-    return deleteAnkiDeckById({ deckId, userId });
+    const result = await deleteAnkiDeckById({ deckId, userId });
+
+    if (!result.success) {
+      throw new Error(typeof result.error === 'string' ? result.error : 'Failed to delete deck');
+    }
+
+    return {
+      success: true,
+      deletedDeckId: result.deletedDeckId
+    };
   }
 );

@@ -1,6 +1,8 @@
-import { GetAllAnkiCardsInDeckUsecase } from "@/use-cases/anki-usecases";
+import { GetAllAnkiCardsInDeckUsecase, GetAnkiDeckByIdUsecase } from "@/use-cases/anki-usecases";
 import AddAnkicardsView from "./add-ankicards-view";
 import { LearnAnkicardsView } from "./learn-ankicards-view";
+import { AnkiViewSwitch } from "./anki-view-switch";
+import { AnkiDeckType } from "@/db/schema/schema";
 
 export default async function AnkiDeckPage({
   params,
@@ -9,10 +11,17 @@ export default async function AnkiDeckPage({
 }) {
   const deckId = (await params).deckId;
   const deckCards = await GetAllAnkiCardsInDeckUsecase(deckId);
+  const deck = await GetAnkiDeckByIdUsecase(deckId);
 
-  if (deckCards.length <= 0) {
-    return <AddAnkicardsView deckId={deckId} />;
+  if (!deck) {
+    return <div>Deck not found</div>;
   }
 
-  return <LearnAnkicardsView deckId={deckId} />;
+  return (
+    <AnkiViewSwitch
+      deckId={deckId}
+      deckCards={deckCards}
+      deck={deck}
+    />
+  );
 }

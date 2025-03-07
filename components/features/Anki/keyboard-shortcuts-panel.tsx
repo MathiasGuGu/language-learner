@@ -8,6 +8,8 @@ import {
   ArrowLeftCircle,
   ArrowRightCircle,
   RefreshCw,
+  ArrowLeft,
+  Plus,
 } from "lucide-react";
 import {
   Tooltip,
@@ -20,12 +22,16 @@ interface KeyboardShortcutsPanelProps {
   onShuffle: () => void;
   isShuffling: boolean;
   isDeckCompleted?: boolean;
+  isUsersDeck?: boolean;
+  setAddingCards: (addingCards: boolean) => void;
 }
 
 export function KeyboardShortcutsPanel({
   onShuffle,
   isShuffling,
   isDeckCompleted = false,
+  isUsersDeck = false,
+  setAddingCards,
 }: KeyboardShortcutsPanelProps) {
   const [showKeyboardShortcuts, setShowKeyboardShortcuts] = useState(false);
 
@@ -35,6 +41,17 @@ export function KeyboardShortcutsPanel({
   return (
     <div className="absolute top-4 right-4 z-10">
       <div className="flex gap-2">
+        {isUsersDeck && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="bg-white shadow-sm"
+            onClick={() => setAddingCards(true)}
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add more cards
+          </Button>
+        )}
         <Button
           variant="outline"
           size="sm"

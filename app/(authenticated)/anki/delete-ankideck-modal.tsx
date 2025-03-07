@@ -8,39 +8,55 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { DeleteAnkideckButton } from "./delete-ankideck-button";
 
 export function DeleteAnkideckModal({
   deckId,
   deckUserId,
+  deckName,
+  isOpen = false,
+  onOpenChange,
 }: {
   deckId: string;
   deckUserId: string;
+  deckName?: string;
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }) {
+  // Function to close modal after successful deletion
+  const handleSuccess = () => {
+    if (onOpenChange) {
+      onOpenChange(false);
+    }
+  };
+
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button
-          variant={"ghost"}
-          className="text-sm font-normal pl-2 py-1 w-full justify-start"
-        >
-          Delete
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+      <DialogContent className="border border-slate-200 bg-white">
         <DialogHeader>
-          <DialogTitle>Are you sure you want to delete this deck?</DialogTitle>
+          <DialogTitle className="text-2xl font-bold text-slate-900">
+            Delete Deck
+          </DialogTitle>
+          <DialogDescription className="text-slate-600 mt-2">
+            Are you sure you want to delete {deckName ? `"${deckName}"` : "this deck"}? This action cannot be undone.
+          </DialogDescription>
         </DialogHeader>
-        <DialogDescription>
-          This will delete this deck forever and can not be undone
-        </DialogDescription>
-        <DialogFooter className="mt-8">
-          <DeleteAnkideckButton deckId={deckId} deckUserId={deckUserId} />
+        <DialogFooter className="mt-8 space-x-2">
           <DialogClose asChild>
-            <Button>No go back</Button>
+            <Button
+              variant="outline"
+              className="border-slate-200 text-slate-700 hover:bg-slate-100 transition-colors duration-100"
+            >
+              Cancel
+            </Button>
           </DialogClose>
+          <DeleteAnkideckButton
+            deckId={deckId}
+            deckUserId={deckUserId}
+            deckName={deckName}
+            onSuccess={handleSuccess}
+          />
         </DialogFooter>
       </DialogContent>
     </Dialog>

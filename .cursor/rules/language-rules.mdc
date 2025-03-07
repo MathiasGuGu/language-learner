@@ -1,0 +1,134 @@
+---
+description: The whole project depends on these rules
+globs: 
+alwaysApply: false
+---
+THIS IS YOUR STYLE GUIDE. ALWAYS USE IT:
+Language Learner App - Anki Route Style Guide
+`
+Colors
+Core Brand Colors
+Primary: Indigo
+indigo-600: Primary buttons, CTAs
+indigo-700: Button hover state
+indigo-200: Card borders
+Neutral Colors
+Background:
+white: Cards, modals, dropdowns
+slate-100 to slate-200 gradient: Page background
+Text:
+slate-900: Headings, titles
+slate-700: Body text
+slate-600: Secondary text
+slate-500: Tertiary text, descriptions
+muted-foreground: Helper text in forms
+Borders:
+slate-200: Standard borders for cards, inputs
+indigo-200: Accent borders for cards
+Accent/Functional Colors
+Emerald:
+emerald-700: Pre-made decks title
+emerald-600: Pre-made decks action text
+emerald-200: Pre-made decks border
+Amber:
+amber-700: Trending decks title
+amber-600: Trending decks action text
+amber-200: Trending decks border
+Typography
+Font Sizes
+Headings:
+Main page title: text-3xl
+Section headings: text-2xl
+Card titles: text-xl
+Body:
+Main text: Default (base)
+Secondary text: text-lg
+Helper text: text-sm
+Font Weights
+font-bold: Headings, titles, buttons
+Default: Regular body text
+Component Styles
+Cards
+Base: bg-white rounded-lg shadow-sm border border-slate-200
+Hover effect: hover:shadow-md transition-all duration-300 transform hover:-translate-y-1
+Special cards: Custom border colors (emerald, amber) for different categories
+Buttons
+Primary:
+bg-indigo-600 hover:bg-indigo-700 text-white transition-colors duration-100
+With icon: gap-2
+Icon Button:
+size="icon"
+variant="ghost" or variant="outline"
+Border: border-slate-200
+Active state: bg-slate-100
+Filter/Toggle Buttons:
+Active: variant="default"
+Inactive: variant="outline"
+Icons
+Size:
+Standard: size={16}
+Navigation/main actions: size={16}
+Stroke Width:
+Standard: strokeWidth={1.5}
+Thin style: strokeWidth={1.6} (used in some arrows)
+Icon Animations:
+Hover movement: group-hover:ml-2 transition-all duration-300 (arrow icons)
+Loading: animate-spin (loader icon)
+Modals & Popups
+Background: bg-white
+Border: border border-slate-200
+Header spacing: Consistent padding (usually p-6 or p-8)
+Form Elements
+Input fields: Default styling with consistent spacing
+Labels: Clear hierarchy with proper spacing
+Checkboxes: Standard styling with appropriate spacing
+Layout & Spacing
+Container
+Max width: max-w-7xl mx-auto
+Padding: px-4 sm:px-6 lg:px-8 py-8
+Grids
+Main layout: grid grid-cols-1 lg:grid-cols-3 gap-8 (2/3 + 1/3 split)
+Form controls: space-y-2 or space-y-4 for vertical spacing
+Button groups: grid grid-cols-2 gap-2
+Padding & Margins
+Card padding: p-6 or p-8
+Form spacing: space-y-8
+Gap between components: gap-4 or gap-8
+Effects & Animations
+Transitions
+Standard duration: duration-300
+Quick transitions: duration-100
+Hover animations: transition-all or transition-colors
+Shadows
+Light shadow: shadow-sm
+Hover shadow: hover:shadow-md
+Interactive Elements
+Hover effects:
+Buttons: Color change
+Cards: Slight elevation (hover:-translate-y-1)
+Icons: Movement (arrow shifting right)
+Recurring Patterns
+Header Sections
+Rounded containers with title + action layout
+Consistent typography hierarchy
+Card Patterns
+Header, content, footer structure
+Consistent border and shadow treatment
+Interactive hover states
+Action Buttons
+Consistent icon + text treatment
+Uniform size and spacing
+Clear hover states
+This style guide represents the current visual language of the Anki route. Following these patterns will ensure consistency in future components and features.
+`
+
+Always write optimal code.
+Do not be afraid of creating components instead of one big file.
+
+Here is a list of tools used: 
+ - Framer motion (under "motion/react"): This is used for animations, we do not define keyframer, we only use motion components for animations.
+- ShadCn for components. We use Shadcn as a component library. (you are allowed to modify the shadcn components to better fit the color theme and look of the app)
+- TailwindCss, We use tailwind css where possible and try to avoid plain css. If needed in in-line style props can be used. BE CAREFUL! we only use tailwind version 4 and up
+- We only use drizzle for communicating with the database. Never SQL, NEVER anything other then drizzles query builder.
+- We always use the use-cases in the application. Repository functions are only for the use-cases and nothing else.
+- Never use packages that are not included in the project. If needed check the package.json to see what you have available.

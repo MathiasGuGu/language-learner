@@ -5,7 +5,7 @@ import { AnkiCardType } from "@/db/schema/schema";
 import { useEffect, useState, useCallback } from "react";
 import { FinishDeckModal } from "./finish-deck-modal";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, RotateCcw, Trophy, BookOpen } from "lucide-react";
+import { ArrowLeft, RotateCcw, Trophy } from "lucide-react";
 import {
   CelebrationEffects,
   ControlPanel,
@@ -15,11 +15,22 @@ import {
   LoadingState,
   ShuffleAnimation,
 } from "@/components/features/Anki";
+import { authClient } from "@/lib/auth-client";
 
 // Final achievement message
 const ACHIEVEMENT_MESSAGE = "Congratulations! Full Deck Mastered! 🏆";
 
-export function LearnAnkicardsView({ deckId }: { deckId: string }) {
+export function LearnAnkicardsView({
+  deckId,
+  deckUserId,
+  setAddingCards,
+}: {
+  deckId: string;
+  deckUserId?: string;
+  setAddingCards: (addingCards: boolean) => void;
+}) {
+  const session = authClient.useSession();
+  const userId = session.data?.user.id;
   const [cards, setCards] = useState<AnkiCardType[]>([]);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -62,7 +73,7 @@ export function LearnAnkicardsView({ deckId }: { deckId: string }) {
     if (currentCardIndex === cards.length - 1) {
       setIsTransitioning(true);
       setIsFlipped(false);
-      
+
       // Animate the last card into the deck and show completion view
       setTimeout(() => {
         setAchievementMessage(ACHIEVEMENT_MESSAGE);
@@ -144,7 +155,13 @@ export function LearnAnkicardsView({ deckId }: { deckId: string }) {
         handlePrevious();
       }
     },
-    [isFlipped, isTransitioning, currentCardIndex, cards.length, isDeckCompleted]
+    [
+      isFlipped,
+      isTransitioning,
+      currentCardIndex,
+      cards.length,
+      isDeckCompleted,
+    ]
   );
 
   const handleShuffle = () => {
@@ -197,34 +214,34 @@ export function LearnAnkicardsView({ deckId }: { deckId: string }) {
               <Trophy className="h-10 w-10 text-green-500" />
             </div>
           </div>
-          
+
           <h2 className="text-2xl font-bold mb-2">Deck Completed!</h2>
           <p className="text-slate-600 mb-8">
-            Congratulations! You've reviewed all the cards in this deck.
-            What would you like to do next?
+            Congratulations! You've reviewed all the cards in this deck. What
+            would you like to do next?
           </p>
-          
+
           <div className="space-y-3">
-            <Button 
-              onClick={handleRestartDeck} 
+            <Button
+              onClick={handleRestartDeck}
               className="w-full flex items-center justify-center gap-2"
               variant="outline"
             >
               <RotateCcw className="h-4 w-4" />
               Practice Again
             </Button>
-            
-            <Button 
-              onClick={handleFinishDeck} 
+
+            <Button
+              onClick={handleFinishDeck}
               className="w-full flex items-center justify-center gap-2"
               variant="default"
             >
               <Trophy className="h-4 w-4" />
               Complete & Earn Points
             </Button>
-            
-            <Button 
-              onClick={handleBackToDeck} 
+
+            <Button
+              onClick={handleBackToDeck}
               className="w-full flex items-center justify-center gap-2"
               variant="ghost"
             >
@@ -243,6 +260,8 @@ export function LearnAnkicardsView({ deckId }: { deckId: string }) {
         isOpen={showFinishModal}
         onClose={() => setShowFinishModal(false)}
         points={100}
+        deckId={deckId}
+        deckName={""}
       />
 
       <CelebrationEffects
@@ -255,6 +274,8 @@ export function LearnAnkicardsView({ deckId }: { deckId: string }) {
         onShuffle={handleShuffle}
         isShuffling={isShuffling}
         isDeckCompleted={isDeckCompleted}
+        isUsersDeck={deckUserId === userId}
+        setAddingCards={setAddingCards}
       />
 
       <DeckVisualization

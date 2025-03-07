@@ -22,6 +22,27 @@
       "when": 1741020465361,
       "tag": "0002_blue_pet_avengers",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1741295860482,
+      "tag": "0003_soft_sprite",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1741297250332,
+      "tag": "0004_needy_speed_demon",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1741350410462,
+      "tag": "0005_condemned_forgotten_one",
+      "breakpoints": true
     }
   ]
 }

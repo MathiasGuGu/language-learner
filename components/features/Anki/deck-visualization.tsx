@@ -19,7 +19,7 @@ export function DeckVisualization({
   progressPercentage,
 }: DeckVisualizationProps) {
   return (
-    <div className="w-1/3 h-full bg-gradient-to-br from-slate-100 to-slate-200 p-8 overflow-hidden relative">
+    <div className="w-1/3 h-full bg-gradient-to-br from-slate-50 to-slate-100 p-8 overflow-hidden relative">
       <div className="mb-8">
         <h2 className="text-2xl font-bold mb-2">Study Session</h2>
         <div className="flex items-center gap-2 mb-4">

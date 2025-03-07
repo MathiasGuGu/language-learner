@@ -36,13 +36,13 @@ export function ControlPanel({
 }: ControlPanelProps) {
   return (
     <div className="mt-12 flex flex-col items-center gap-6">
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-6 bg-white border  shadow-sm  border-zinc-200 rounded-lg p-4">
         <div className="flex flex-col items-center">
           <Button
             variant="outline"
             onClick={onPrevious}
             disabled={currentCardIndex === 0 || isTransitioning}
-            className="transition-all duration-200 hover:shadow-md"
+            className="transition-all duration-200 bg-white"
           >
             <ArrowLeft className="mr-2" /> Previous
           </Button>
@@ -56,7 +56,7 @@ export function ControlPanel({
           <Button
             size="lg"
             onClick={onFlip}
-            className="px-8 transition-all duration-200 hover:shadow-md bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600 text-white border-none"
+            className="px-8 transition-all duration-200 hover:shadow-md bg-indigo-600 hover:bg-indigo-700 text-white border-none"
           >
             <Rotate3D className="mr-2" /> Flip Card
           </Button>
@@ -71,7 +71,7 @@ export function ControlPanel({
             variant="outline"
             onClick={onNext}
             disabled={isTransitioning}
-            className="transition-all duration-200 hover:shadow-md"
+            className="transition-all duration-200"
           >
             Next <ArrowRight className="ml-2" />
           </Button>

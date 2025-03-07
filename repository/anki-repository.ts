@@ -45,7 +45,37 @@ export const getAllAnkiDeckByUserId = async (userId: string) => {
 };
 // POST
 export const createAnkiDeck = async (deckInfo: NewAnkiDeckType) => {
-  return db.insert(AnkiDeck).values(deckInfo).returning();
+  try {
+    const result = await db.insert(AnkiDeck).values(deckInfo).returning();
+
+
+    if (result && result.length > 0) {
+      const serializedDeck = {
+        ...result[0],
+        createdAt: result[0].createdAt instanceof Date
+          ? result[0].createdAt.toISOString()
+          : result[0].createdAt,
+        updatedAt: result[0].updatedAt instanceof Date
+          ? result[0].updatedAt.toISOString()
+          : result[0].updatedAt,
+      };
+
+      return {
+        success: true,
+        createdDeck: serializedDeck
+      };
+    }
+
+    return {
+      success: false,
+      error: "Failed to create deck"
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error"
+    };
+  }
 };
 
 // DELETE
@@ -56,7 +86,18 @@ export const deleteAnkiDeckById = async ({
   deckId: string;
   userId: string;
 }) => {
-  return db
-    .delete(AnkiDeck)
-    .where(and(eq(AnkiDeck.id, deckId), eq(AnkiDeck.userId, userId)));
+  try {
+    await db
+      .delete(AnkiDeck)
+      .where(and(eq(AnkiDeck.id, deckId), eq(AnkiDeck.userId, userId)));
+    return {
+      success: true,
+      deletedDeckId: deckId
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
 };

@@ -4,20 +4,45 @@ import { motion } from "motion/react";
 import { Trophy, Star, Medal, PartyPopper } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DialogTitle } from "@radix-ui/react-dialog";
+import { useEffect, useState } from "react";
+import { authClient } from "@/lib/auth-client";
+
+import { toast } from "sonner";
 
 interface FinishDeckModalProps {
   isOpen: boolean;
   onClose: () => void;
   points?: number;
+  deckId: string;
+  deckName: string;
+  isFirstCompletion?: boolean;
+  isPerfectScore?: boolean;
 }
 
 export function FinishDeckModal({
   isOpen,
   onClose,
   points = 100,
+  deckId,
+  deckName,
+  isFirstCompletion = true,
+  isPerfectScore = false,
 }: FinishDeckModalProps) {
+  const session = authClient.useSession();
+  const [rewardsResult, setRewardsResult] = useState<any>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const userId = session.data?.user.id;
+  // Process rewards when modal opens
+
+
+  // Reset state when modal closes
+  const handleClose = () => {
+    setRewardsResult(null);
+    onClose();
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md bg-gradient-to-br from-indigo-50 via-white to-blue-50 border-none shadow-xl">
         <div className="sr-only">
           <DialogTitle>Deck finished</DialogTitle>
@@ -80,9 +105,15 @@ export function FinishDeckModal({
             <div className="flex items-center justify-center gap-2 mt-2">
               <Medal className="w-5 h-5 text-yellow-500" />
               <span className="text-lg font-semibold">
-                {points} Points Earned
+                {rewardsResult?.alreadyCompletedToday ? '0' : points} Points Earned
               </span>
             </div>
+
+            {rewardsResult && (
+              <div className="mt-2 text-indigo-600 text-sm">
+                Total Points: {rewardsResult.currentPoints} (Level {rewardsResult.currentLevel})
+              </div>
+            )}
           </motion.div>
 
           {/* Achievement badges */}
@@ -92,23 +123,75 @@ export function FinishDeckModal({
             transition={{ delay: 0.4 }}
             className="flex gap-4 mb-6"
           >
+            {isPerfectScore && (
+              <div className="flex flex-col items-center bg-white/50 rounded-lg p-3 shadow-sm">
+                <Star className="w-6 h-6 text-yellow-500 mb-1" />
+                <span className="text-xs font-medium text-indigo-700">
+                  Perfect Score
+                </span>
+              </div>
+            )}
+
             <div className="flex flex-col items-center bg-white/50 rounded-lg p-3 shadow-sm">
               <PartyPopper className="w-6 h-6 text-indigo-500 mb-1" />
               <span className="text-xs font-medium text-indigo-700">
                 Deck Master
               </span>
             </div>
-            <div className="flex flex-col items-center bg-white/50 rounded-lg p-3 shadow-sm">
-              <Star className="w-6 h-6 text-yellow-500 mb-1" />
-              <span className="text-xs font-medium text-indigo-700">
-                Perfect Score
-              </span>
-            </div>
           </motion.div>
+
+          {/* New achievements earned */}
+          {rewardsResult && rewardsResult.newAchievements.length > 0 && !rewardsResult.alreadyCompletedToday && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="w-full mb-6"
+            >
+              <h3 className="text-sm font-semibold text-indigo-800 mb-2">
+                New Achievements Unlocked!
+              </h3>
+
+              <div className="flex flex-wrap justify-center gap-2">
+                {rewardsResult.newAchievements.map((item: any, index: number) => (
+                  <div
+                    key={index}
+                    className="bg-gradient-to-r from-indigo-100 to-blue-100 rounded-lg p-3 flex items-center gap-3 shadow-sm"
+                  >
+                    {item.achievement.iconName === 'Trophy' && <Trophy className="w-5 h-5 text-yellow-500" />}
+                    {item.achievement.iconName === 'Medal' && <Medal className="w-5 h-5 text-yellow-500" />}
+                    {item.achievement.iconName === 'Star' && <Star className="w-5 h-5 text-yellow-500" />}
+
+                    <div className="text-left">
+                      <div className="text-xs font-semibold text-indigo-800">{item.achievement.name}</div>
+                      <div className="text-xs text-indigo-600">+{item.pointsAwarded} points</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Already completed today */}
+          {rewardsResult && rewardsResult.alreadyCompletedToday && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="w-full mb-6 bg-yellow-50 rounded-lg p-4 shadow-sm border border-yellow-200"
+            >
+              <h3 className="text-sm font-semibold text-amber-700 mb-1">
+                You already completed this deck today
+              </h3>
+              <p className="text-xs text-amber-600">
+                You can only earn points for completing a deck once per day. Come back tomorrow for more points!
+              </p>
+            </motion.div>
+          )}
 
           {/* Close button */}
           <Button
-            onClick={onClose}
+            onClick={handleClose}
             className="bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600 text-white shadow-md hover:shadow-lg transition-all"
           >
             Continue Learning
